@@ -1,0 +1,116 @@
+<!doctype html>
+<html>
+  <head>
+    <title>PRogress bar app</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
+	<style>
+/*	.myProgress {
+  position: relative;
+  width: 100%;
+  height: 30px;
+  background-color: #ddd;
+  margin:5px;
+} */
+/*
+.myBar {
+  position: absolute;
+  width: 10%;
+  height: 100%;
+  background-color: #4CAF50;
+}
+
+.label {
+  text-align: center;
+  line-height: 30px;
+  color: white;
+}*/
+
+.btn { float:left; margin-right: 15px}
+
+progress {
+  background-color: #f3f3f3;
+  border: 0;
+  height: 30px;
+  border-radius: 9px;
+  margin:10px;
+  width:90%;
+  position:relative;
+}
+progress::after {
+  content:attr(value)"%";
+  text-align:center;
+  top:5px;
+  position:absolute;
+  right:48%;
+}
+progress::-webkit-progress-bar {
+  background-color: #fff;  
+  border-radius:5px;
+  border: 1px solid #cecece;
+  
+}/*
+progress:not([value ^= "230"]){
+    background-color: red; 
+    border:1px solid;
+}*/
+progress::-webkit-progress-value {
+  background-color: #19e1fc;
+}
+progress[value ^= "230"]::-webkit-progress-value {
+  background-color: red;   
+}
+
+progress::-moz-progress-bar {
+  background-color: #19e1fc;  
+  border-radius:5px;
+  border: 1px solid #cecece;
+ }
+	</style>
+  </head>
+  <body >	
+		<div ng-app="app" ng-controller="main">
+			
+			<div>
+			<!--	<div style="display:none" ng-repeat="(bars_key, value) in pb_res.bars track by $index">
+					<div class="myProgress">
+						<div class="myBar" id="myBar_{{bars_key}}">
+						  <div class="label" id="myBarLabel_{{bars_key}}">{{value}}%</div>
+						  <div ng-init="loadBar(value, bars_key)">
+						  </div>
+						</div>
+					</div>
+				</div> -->
+				<!-- 
+					check this in chrome, and has got some issues with progress bar, color changes.
+					the color change on;y at 230;
+					
+				-->
+			  <progress max="{{pb_res.limit}}" value="{{value}}"  ng-repeat="(bars_key, value) in pb_res.bars track by $index"></progress>
+			</div>
+			<div>
+			  <select class="btn" ng-model="selected_bar">
+				<option value="{{it_key}}" ng-repeat="(it_key, it_val) in pb_res.bars track by $index" > #progress bar {{ it_key +1 }}</option>
+			</select>
+			
+			  <div ng-repeat="(btn_key, button) in pb_res.buttons track by $index">
+			  <input class="btn" ng-click="changeVal(button)" type="button" ng-model="selected_val" value="{{button}}">
+			</div>
+		</div>
+  </body>
+</html>
+
+<script>
+	angular.module("app", [])
+	.controller("main", ['$scope', function($scope) {
+		$scope.selected_bar = 0;
+		$scope.pb_res = {
+		   "buttons": [10,38,-13,-18],
+		   "bars": [62,45,62],
+		   "limit": 230
+		};
+		$scope.changeVal = function (val) {
+			var selected = $scope.pb_res.bars[$scope.selected_bar];
+		  $scope.pb_res.bars[$scope.selected_bar] = (selected+parseInt(val) >= 0) ? selected+parseInt(val) : 0;
+		};
+	}])
+</script>
